@@ -110,6 +110,9 @@ std::string translateLLVMIRToASM(
   std::string error;
   auto target =
       llvm::TargetRegistry::lookupTarget(module.getTargetTriple(), error);
+    if (!target) {
+      throw std::runtime_error("target lookup error: " + error);
+    }
   llvm::TargetOptions opt;
   if (enable_fp_fusion)
     opt.AllowFPOpFusion = llvm::FPOpFusion::Fast;
@@ -374,6 +377,9 @@ void init_triton_llvm(py::module &&m) {
     std::string error;
     auto target =
         llvm::TargetRegistry::lookupTarget(mod->getTargetTriple(), error);
+    if (!target) {
+      throw std::runtime_error("target lookup error: " + error);
+    }
     std::unique_ptr<llvm::TargetMachine> machine{target->createTargetMachine(
         mod->getTargetTriple(), llvm::sys::getHostCPUName(), "", {},
         llvm::Reloc::PIC_)};
