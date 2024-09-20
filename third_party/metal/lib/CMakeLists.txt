@@ -1,12 +1,12 @@
-set(LIB_HEADERS  ${CMAKE_CURRENT_SOURCE_DIR}/../include)
+set(LIB_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/../include)
 get_property(conversion_libs GLOBAL PROPERTY MLIR_CONVERSION_LIBS)
 
 add_mlir_dialect_library(MLIRMetal
-		# # Conversion
-		# ${LIB_HEADERS}/Conversion/MetalPasses.h
-		# ${LIB_HEADERS}/Conversion/MetalToLLVM.h
-		# Conversion/ConvertMetalToLLVM.cpp
-		# Conversion/MetalToLLVM.cpp
+		# Conversion
+		${LIB_HEADERS}/Conversion/MetalPasses.h
+		${LIB_HEADERS}/Conversion/MetalToLLVM.h
+		Conversion/ConvertMetalToLLVM.cpp
+		Conversion/MetalToLLVM.cpp
 
 		# IR
 		${LIB_HEADERS}/IR/MetalDialect.h
@@ -25,9 +25,9 @@ add_mlir_dialect_library(MLIRMetal
 		DEPENDS
 		MLIRMetalOpsIncGen
 		MLIRMetalOpsEnumsGen
-		# MLIRMetalConversionPassIncGen
+		MLIRMetalConversionPassIncGen
 
 		LINK_LIBS PUBLIC
 		MLIRIR
-		# ${conversion_libs}
+		${conversion_libs}
 )
