@@ -81,14 +81,24 @@ class MetalBackend(BaseBackend):
 
     @staticmethod
     def make_ttgir(mod, metadata, opt):
+        pm = ir.pass_manager(mod.context)
+        pm.enable_debug()
+        passes.ttir.add_convert_to_ttgpuir(pm, f"mps", 1, 1, 1)
+        pm.run(mod)
         return mod
 
     @staticmethod
     def make_llir(src, metadata, options):
+        import pdb; pdb.set_trace()
         mod = src
+        # TritonGPU -> LLVM-IR (MLIR)
+        pm = ir.pass_manager(mod.context)
+        pm.enable_debug()
+        # LLVM-IR (MLIR) -> LLVM-IR (LLVM)
         llvm.init_targets()
         context = llvm.context()
         llvm_mod = llvm.to_module(mod, context)
+        llvm.optimize_module(llvm_mod, llvm.OPTIMIZE_O3)
         metadata["shared"] = src.get_int_attr("triton_gpu.shared")
         return str(llvm_mod)
 
